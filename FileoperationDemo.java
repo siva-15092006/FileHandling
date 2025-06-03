@@ -1,49 +1,66 @@
-import java.io.FileWriter;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
+import java.util.Scanner;
 
-/**
- * Demonstrates basic file operations in Java:
- * 1. Writing text to a file.
- * 2. Reading text from a file.
- */
 public class FileoperationDemo {
-    public static void main(String[] args) {
-        String filename = "example.txt";
-        String content = "Hello, this is a demonstration of file operations in Java.\n";
-
-        // Writing to a file
-        try (FileReader reader = new FileReader(filename)) {
-            int ch;
-            System.out.println("Contents of the file:");
-            while ((ch = reader.read()) != -1) {
-                System.out.print((char) ch);
+    public static void readFile(String fileName) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            System.out.println("Reading file: " + fileName);
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
             }
-            System.out.println();
         } catch (IOException e) {
-            System.out.println("An error occurred while reading the file.");
-            e.printStackTrace();
+            System.out.println("Error reading file: " + e.getMessage());
         }
-        try (FileWriter writer = new FileWriter(filename)) {
+    }
+    public static void writeFile(String fileName, String content) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
             writer.write(content);
-            writer.write("it is scripted by siva\n");
-            System.out.println("File written successfully.");
+            System.out.println("Content written to file: " + fileName);
         } catch (IOException e) {
-            System.out.println("An error occurred while writing to the file.");
-            e.printStackTrace();
+            System.out.println("Error writing to file: " + e.getMessage());
         }
-
-        // Reading from a file
-        try (FileReader reader = new FileReader(filename)) {
-            int ch;
-            System.out.println("Contents of the file:");
-            while ((ch = reader.read()) != -1) {
-                System.out.print((char) ch);
+    }
+    public static void modifyFile(String fileName, String newContent) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName, true))) {
+            writer.newLine();
+            writer.write(newContent);
+            System.out.println("Content appended to file: " + fileName);
+        } catch (IOException e) {
+            System.out.println("Error modifying file: " + e.getMessage());
+        }
+    }
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter the file name with extension:");
+        int choice=0;
+        String fileName = scanner.nextLine();
+        System.out.println("the operations are: \n1. Read File \n2. Write File \n3. Modify File \n4. exit");
+        while (choice != 4) {
+            System.out.println("\nEnter your choice:");
+            choice = scanner.nextInt();
+            scanner.nextLine();
+                switch (choice) {
+                    case 1:
+                        readFile(fileName);
+                        break;
+                    case 2:
+                        System.out.println("Enter content to write to the file:");
+                        String content = scanner.nextLine();
+                        writeFile(fileName, content);
+                        break;
+                    case 3:
+                        System.out.println("Enter content to append to the file:");
+                        String newContent = scanner.nextLine();
+                        modifyFile(fileName, newContent);
+                        break;
+                    case 4:
+                        System.out.println("Exit program");
+                        break;
+                    default:
+                        System.out.println("Invalid choice.");
+                }
             }
-            System.out.println();
-        } catch (IOException e) {
-            System.out.println("An error occurred while reading the file.");
-            e.printStackTrace();
-        }
+        scanner.close();
     }
 }
